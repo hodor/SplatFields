@@ -27,6 +27,20 @@ RUN apt-get update && \
     xz-utils \
     tk-dev \
     libffi-dev \
+    cmake \
+    pkg-config \
+    libjpeg-dev \
+    libpng-dev \
+    libtiff-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libswscale-dev \
+    libv4l-dev \
+    libxvidcore-dev \
+    libx264-dev \
+    libgtk-3-dev \
+    libatlas-base-dev \
+    gfortran \
     liblzma-dev && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
@@ -47,17 +61,18 @@ ENV SPLAT_ROOT="/root/splatfields"
 ENV MMCV_ROOT="/root/mmcv"
 ENV DATA_ROOT="/root/blender_dataset"
 
-RUN git clone --depth 1 -b v1.6.0 https://github.com/open-mmlab/mmcv.git $MMCV_ROOT
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu116
+
+RUN git clone -b v1.6.0 https://github.com/hodor/mmcv.git $MMCV_ROOT
 WORKDIR $MMCV_ROOT
 RUN pip install -r requirements/optional.txt
-RUN MMCV_WITH_OPS=1 FORCE_CUDA=1 pip install -e . -v
+# RUN MMCV_WITH_OPS=1 FORCE_CUDA=1 pip install -e . -v
+# RUN python .dev_scripts/check_installation.py
 
 RUN git clone -b docker https://github.com/hodor/SplatFields.git $SPLAT_ROOT
 WORKDIR $SPLAT_ROOT
 
-RUN pip install --upgrade pip
-# We're going to install specific things manually and all the default through the requirements
-RUN pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu116
 RUN pip install -r requirements.txt
 # This will ensure that we're going to build using our own torch and cuda
 # Unfortunately I was running into some issues here so I'll have to ask the users to run this themselves inside the

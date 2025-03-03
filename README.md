@@ -36,13 +36,33 @@ docker build -t splatfields .
 docker run --gpus all -it splatfields
 ```
 
-### 4. Install other dependencies
-I wasn't able to get all dependencies installed through the dockerfile, so you'll need to install these yourself.
+### 4. Compile MMCV from Source
+I wasn't able to get MMCV to build directly on the dockerfile, so you will have to do it yourself.
+
+```bash
+cd $MMCV_ROOT
+MMCV_WITH_OPS=1 FORCE_CUDA=1 pip install -e . -v
+```
+
+After the compilation is done, check if everything is ok:
+```bash
+python .dev_scripts/check_installation.py
+```
+
+### 5. Install other dependencies
+You'll also need to install these yourself.
 Just copy and paste the lines below into your terminal.
 ```bash
 pip install --no-build-isolation git+https://github.com/ingra14m/depth-diff-gaussian-rasterization@f2d8fa9921ea9a6cb9ac1c33a34ebd1b11510657#egg=diff_gaussian_rasterization
 pip install --no-build-isolation git+https://gitlab.inria.fr/bkerbl/simple-knn.git@44f764299fa305faf6ec5ebd99939e0508331503#egg=simple_knn
 pip install --no-build-isolation git+https://github.com/open-mmlab/mmgeneration@f6551e1d6ca24121d1f0a954c3b3ac15de6d302e#egg=mmgen
+```
+
+### 6. Train and render the sample data
+```bash
+cd $SPLAT_ROOT
+python train.py -s /root/blender_dataset/lego --white_background --eval  -m ./output_rep/Blender/lego/10views/SplatFields --encoder_type VarTriPlaneEncoder --D 4 --lambda_norm 0.01 --test_iterations -1 --W 128 --n_views 10 --iterations 40000 --pts_samples load --max_num_pts 100000 --pc_path ./output_rep/Blender/lego/10views/3DGS/point_cloud/iteration_40000/point_cloud.ply --load_time_step 0 --composition_rank 0
+python render.py -s /root/blender_dataset/lego --white_background --eval  -m ./output_rep/Blender/lego/10views/3DGS --is_static --n_views $N_VIEWS --iterations 40000 --pts_samples hull --max_num_pts 300000 --load_time_step 0 --composition_rank 0
 ```
 
 ## Static Reconstruction
