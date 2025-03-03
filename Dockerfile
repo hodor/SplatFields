@@ -52,6 +52,9 @@ RUN apt-get update && \
 ENV PYENV_ROOT="/root/.pyenv"
 ENV PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
 
+# Install cargo for diffusers
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
 # Install pyenv and Python 3.7.13
 RUN git clone https://github.com/pyenv/pyenv.git $PYENV_ROOT && \
     $PYENV_ROOT/bin/pyenv install 3.7.13 && \
@@ -59,17 +62,28 @@ RUN git clone https://github.com/pyenv/pyenv.git $PYENV_ROOT && \
 
 ENV SPLAT_ROOT="/root/splatfields"
 ENV MMCV_ROOT="/root/mmcv"
+ENV MMGEN_ROOT="/root/mmgen"
 ENV DATA_ROOT="/root/blender_dataset"
+ENV ROOT="/root"
 
 RUN pip install --upgrade pip setuptools wheel
 RUN pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu116
 
+# Prepare MMCV for manual compilation
 RUN git clone -b v1.6.0 https://github.com/hodor/mmcv.git $MMCV_ROOT
 WORKDIR $MMCV_ROOT
 RUN pip install -r requirements/optional.txt
 # RUN MMCV_WITH_OPS=1 FORCE_CUDA=1 pip install -e . -v
 # RUN python .dev_scripts/check_installation.py
 
+# Prepare MMGEN for manual compilation
+WORKDIR $ROOT
+RUN git clone https://github.com/hodor/mmgeneration.git $MMGEN_ROOT
+WORKDIR $MMGEN_ROOT
+RUN pip install -e . -v
+
+# Prepare Splat Fields
+WORKDIR $ROOT
 RUN git clone -b docker https://github.com/hodor/SplatFields.git $SPLAT_ROOT
 WORKDIR $SPLAT_ROOT
 

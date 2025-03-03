@@ -14,7 +14,17 @@ Our approach effectively handles static and dynamic scenes.
 > 
 >It is maintained by **Rogério T. Gasi** (`rgasi@siggraph.org`) as part of an open-source ETC project.
 
-## Installation
+## Grabbing the Docker Image
+
+Run the following to get the latest image and run it. You should be able to start training and rendering.
+The data that I got doesn't have the point_cloud.ply - which I still need to troubleshoot
+```bash
+docker pull rtgasi/splat-fields:1.0.0
+docker run --gpus all -it rtgasi/splat-fields:1.0.0
+```
+
+
+## Building the Docker Image
 
 We will use Docker to build an image.
 
@@ -55,7 +65,7 @@ Just copy and paste the lines below into your terminal.
 ```bash
 pip install --no-build-isolation git+https://github.com/ingra14m/depth-diff-gaussian-rasterization@f2d8fa9921ea9a6cb9ac1c33a34ebd1b11510657#egg=diff_gaussian_rasterization
 pip install --no-build-isolation git+https://gitlab.inria.fr/bkerbl/simple-knn.git@44f764299fa305faf6ec5ebd99939e0508331503#egg=simple_knn
-pip install --no-build-isolation git+https://github.com/open-mmlab/mmgeneration@f6551e1d6ca24121d1f0a954c3b3ac15de6d302e#egg=mmgen
+pip install diffusers==0.21.4
 ```
 
 ### 6. Train and render the sample data
