@@ -45,7 +45,7 @@ RUN git clone https://github.com/pyenv/pyenv.git $PYENV_ROOT && \
 
 ENV SPLAT_ROOT="/root/splatfields"
 
-RUN git clone https://github.com/hodor/SplatFields.git $SPLAT_ROOT
+RUN git clone -b docker https://github.com/hodor/SplatFields.git $SPLAT_ROOT
 WORKDIR $SPLAT_ROOT
 
 RUN pip install --upgrade pip
