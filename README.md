@@ -36,6 +36,15 @@ docker build -t splatfields .
 docker run --gpus all -it splatfields
 ```
 
+### 4. Install other dependencies
+I wasn't able to get all dependencies installed through the dockerfile, so you'll need to install these yourself.
+Just copy and paste the lines below into your terminal.
+```bash
+pip install --no-build-isolation git+https://github.com/ingra14m/depth-diff-gaussian-rasterization@f2d8fa9921ea9a6cb9ac1c33a34ebd1b11510657#egg=diff_gaussian_rasterization
+pip install --no-build-isolation git+https://gitlab.inria.fr/bkerbl/simple-knn.git@44f764299fa305faf6ec5ebd99939e0508331503#egg=simple_knn
+pip install --no-build-isolation git+https://github.com/open-mmlab/mmgeneration@f6551e1d6ca24121d1f0a954c3b3ac15de6d302e#egg=mmgen
+```
+
 ## Static Reconstruction
 The project structure follows the original 3DGS repository. 
 
@@ -45,9 +54,12 @@ The original instructions had a broken link to the NERF Blender Dataset. I downl
 To download the datasets, you need to do `nerfbaselines download-dataset external://blender` from your venv, and then set the folder `C:\Users\USERNAME\.cache\nerfbaselines\datasets\blender\` in your bat script.
 Alternatively, you can also [download from Google Drive](https://drive.google.com/file/d/1BYyEWDk2q1xzij9dXsi54StMrNmPshhv/view?usp=sharing).
 
-To run SplatFields on the Blender dataset follow the instructions in the `run_blender.bat` script. 
+> **NOTE: This is already done automatically in your docker image**
+
+To run SplatFields on the Blender dataset follow the instructions in the `run_blender.sh` script. 
 
 Make sure that the `DATASET_ROOT` variable is set to the directory where the Blender dataset is downloaded. 
+In our case it should be `/root/blender_dataset`.
 
 ### DTU Dataset (NOT UPDATED)
 To run our method on the DTU dataset, you could directly download the pre-processed subset released in the [2DGS repo](https://drive.google.com/drive/folders/1SJFgt8qhQomHX55Q4xSvYE2C6-8tFll9). 
