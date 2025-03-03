@@ -9,43 +9,54 @@ SplatFields regularizes 3D Gaussian Splatting (3DGS) by predicting the splat fea
 
 Our approach effectively handles static and dynamic scenes. 
 
-## Installation
-We tested on a server configured with Ubuntu 18.04, cuda 11.6 and gcc 9.4.0. Other similar configurations should also work, but we have not verified each one individually.
+> **Fork Information:**  
+> This repository is a fork of the original SplatFields implementation.
+> 
+>It is maintained by **Rogério T. Gasi** (`rgasi@siggraph.org`) as part of an open-source ETC project.
 
-### 1. Clone this repo:
+## Installation
+
+We will use Docker to build an image.
+
+### 1. Pull from nvidia:
 
 ```bash
-git clone https://github.com/markomih/SplatFields.git
-cd SplatFields
+docker pull nvidia/cuda:11.6.2-cudnn8-devel-ubuntu18.04
 ```
 
-### 2. Install dependencies
+### 2. Build your image
 
 ```bash
-conda env create --file environment.yml
-conda activate SplatFields
-# install 3DGS renderer
-pip3 install -e git+https://github.com/ingra14m/depth-diff-gaussian-rasterization@f2d8fa9921ea9a6cb9ac1c33a34ebd1b11510657#egg=diff_gaussian_rasterization
-pip3 install -e git+https://gitlab.inria.fr/bkerbl/simple-knn.git@44f764299fa305faf6ec5ebd99939e0508331503#egg=simple_knn
-pip3 install -e git+https://github.com/open-mmlab/mmgeneration@f6551e1d6ca24121d1f0a954c3b3ac15de6d302e#egg=mmgen
+docker build -t splatfields .
+```
+
+### 3. Run the image
+
+```bash
+docker run --gpus all -it splatfields
 ```
 
 ## Static Reconstruction
-The project structure follows the origianl 3DGS repository. 
+The project structure follows the original 3DGS repository. 
 
 ### Blender Dataset
-To run SplatFields on the Blender dataset, download the origianl [NeRF synthetic dataset](https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1) and follow the instructions in the `run_blender.sh` script. 
+The original instructions had a broken link to the NERF Blender Dataset. I downloaded the dataset from this link: https://nerfbaselines.github.io/blender and I put it in my google drive for a single access. I got the 3DGS-MCMC method but you can feel free to use what you need.
+
+To download the datasets, you need to do `nerfbaselines download-dataset external://blender` from your venv, and then set the folder `C:\Users\USERNAME\.cache\nerfbaselines\datasets\blender\` in your bat script.
+Alternatively, you can also [download from Google Drive](https://drive.google.com/file/d/1BYyEWDk2q1xzij9dXsi54StMrNmPshhv/view?usp=sharing).
+
+To run SplatFields on the Blender dataset follow the instructions in the `run_blender.bat` script. 
 
 Make sure that the `DATASET_ROOT` variable is set to the directory where the Blender dataset is downloaded. 
 
-### DTU Dataset
+### DTU Dataset (NOT UPDATED)
 To run our method on the DTU dataset, you could directly download the pre-processed subset released in the [2DGS repo](https://drive.google.com/drive/folders/1SJFgt8qhQomHX55Q4xSvYE2C6-8tFll9). 
 We provide the bash script `run_dtu.sh` to run SplatFields on the DTU sequences. Update the `DATASET_ROOT` in the script to the path of the downloaded dataset. 
 
 ## Dynamic Reconstruction
 SplatFields straightforwardly extends to dynamic scenes. 
 
-### Owlii Dataset
+### Owlii Dataset (NOT UPDATED)
 The pre-processed Owlii dataset for the dynamic sparse view reconstruction is available [here](https://drive.google.com/file/d/1OdqwXKmvnpxFI4LC8ckI0eV6r9EZ64ZV/view?usp=sharing) (or download it via `gdown 1OdqwXKmvnpxFI4LC8ckI0eV6r9EZ64ZV && unzip DATA_OWLII`). Then, run the script `run_owlii.sh` to train our model on varying configurations (set the data directory appropriately). 
 
 ## Citation
