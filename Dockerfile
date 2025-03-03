@@ -44,7 +44,13 @@ RUN git clone https://github.com/pyenv/pyenv.git $PYENV_ROOT && \
     $PYENV_ROOT/bin/pyenv global 3.7.13
 
 ENV SPLAT_ROOT="/root/splatfields"
+ENV MMCV_ROOT="/root/mmcv"
 ENV DATA_ROOT="/root/blender_dataset"
+
+RUN git clone --depth 1 -b v1.6.0 https://github.com/open-mmlab/mmcv.git $MMCV_ROOT
+WORKDIR $MMCV_ROOT
+RUN pip install -r requirements/optional.txt
+RUN MMCV_WITH_OPS=1 FORCE_CUDA=1 pip install -e . -v
 
 RUN git clone -b docker https://github.com/hodor/SplatFields.git $SPLAT_ROOT
 WORKDIR $SPLAT_ROOT
