@@ -72,7 +72,7 @@ pip install diffusers==0.21.4
 ```bash
 cd $SPLAT_ROOT
 python train.py -s /root/blender_dataset/lego --white_background --eval  -m ./output_rep/Blender/lego/10views/SplatFields --encoder_type VarTriPlaneEncoder --D 4 --lambda_norm 0.01 --test_iterations -1 --W 128 --n_views 10 --iterations 40000 --pts_samples load --max_num_pts 100000 --pc_path ./output_rep/Blender/lego/10views/3DGS/point_cloud/iteration_40000/point_cloud.ply --load_time_step 0 --composition_rank 0
-python render.py -s /root/blender_dataset/lego --white_background --eval  -m ./output_rep/Blender/lego/10views/3DGS --is_static --n_views $N_VIEWS --iterations 40000 --pts_samples hull --max_num_pts 300000 --load_time_step 0 --composition_rank 0
+python render.py -s /root/blender_dataset/lego --white_background --eval  -m ./output_rep/Blender/lego/10views/3DGS --is_static --n_views 10 --iterations 40000 --pts_samples hull --max_num_pts 300000 --load_time_step 0 --composition_rank 0
 ```
 
 ## Static Reconstruction
