@@ -14,13 +14,33 @@ Our approach effectively handles static and dynamic scenes.
 > 
 >It is maintained by **Rogério T. Gasi** (`rgasi@siggraph.org`) as part of an open-source ETC project.
 
-## Grabbing the Docker Image
+## Running from the Docker Image
+
+### 1. Grabbing the Docker Image
 
 Run the following to get the latest image and run it. You should be able to start training and rendering.
 The data that I got doesn't have the point_cloud.ply - which I still need to troubleshoot
 ```bash
 docker pull rtgasi/splat-fields:1.0.0
 docker run --gpus all -it rtgasi/splat-fields:1.0.0
+```
+
+### 2. Train and render the sample data
+You'll need to do the 3DGS before you do the SplatFields3D
+
+```bash
+cd $SPLAT_ROOT
+SCENE=lego # any of the Blender scenes
+N_VIEWS=10 # in range (4 6 8 10 12)
+DATASET_ROOT=$DATA_ROOT
+
+# # to reproduce 3DGS
+python train.py -s ${DATASET_ROOT}/${SCENE} --white_background --eval  -m ./output_rep/Blender/$SCENE/${N_VIEWS}views/3DGS --is_static --n_views $N_VIEWS --iterations 40000 --pts_samples hull --max_num_pts 300000 --load_time_step 0 --composition_rank 0
+python render.py -s ${DATASET_ROOT}/${SCENE} --white_background --eval  -m ./output_rep/Blender/$SCENE/${N_VIEWS}views/3DGS --is_static --n_views $N_VIEWS --iterations 40000 --pts_samples hull --max_num_pts 300000 --load_time_step 0 --composition_rank 0
+
+# to reproduce SplatFields3D
+python train.py -s ${DATASET_ROOT}/${SCENE} --white_background --eval  -m ./output_rep/Blender/${SCENE}/${N_VIEWS}views/SplatFields --encoder_type VarTriPlaneEncoder --D 4 --lambda_norm 0.01 --test_iterations -1 --W 128 --n_views ${N_VIEWS} --iterations 40000 --pts_samples load --max_num_pts 100000 --pc_path ./output_rep/Blender/${SCENE}/${N_VIEWS}views/3DGS/point_cloud/iteration_40000/point_cloud.ply --load_time_step 0 --composition_rank 0
+python render.py -s ${DATASET_ROOT}/${SCENE} --white_background --eval  -m ./output_rep/Blender/${SCENE}/${N_VIEWS}views/SplatFields --encoder_type VarTriPlaneEncoder --D 4 --lambda_norm 0.01 --test_iterations -1 --W 128 --n_views ${N_VIEWS} --iterations 40000 --pts_samples load --max_num_pts 100000 --pc_path ./output_rep/Blender/${SCENE}/${N_VIEWS}views/3DGS/point_cloud/iteration_40000/point_cloud.ply --load_time_step 0 --composition_rank 0
 ```
 
 
@@ -69,10 +89,21 @@ pip install diffusers==0.21.4
 ```
 
 ### 6. Train and render the sample data
+You'll need to do the 3DGS before you do the SplatFields3D
+
 ```bash
 cd $SPLAT_ROOT
-python train.py -s /root/blender_dataset/lego --white_background --eval  -m ./output_rep/Blender/lego/10views/SplatFields --encoder_type VarTriPlaneEncoder --D 4 --lambda_norm 0.01 --test_iterations -1 --W 128 --n_views 10 --iterations 40000 --pts_samples load --max_num_pts 100000 --pc_path ./output_rep/Blender/lego/10views/3DGS/point_cloud/iteration_40000/point_cloud.ply --load_time_step 0 --composition_rank 0
-python render.py -s /root/blender_dataset/lego --white_background --eval  -m ./output_rep/Blender/lego/10views/3DGS --is_static --n_views 10 --iterations 40000 --pts_samples hull --max_num_pts 300000 --load_time_step 0 --composition_rank 0
+SCENE=lego # any of the Blender scenes
+N_VIEWS=10 # in range (4 6 8 10 12)
+DATASET_ROOT=$DATA_ROOT
+
+# # to reproduce 3DGS
+python train.py -s ${DATASET_ROOT}/${SCENE} --white_background --eval  -m ./output_rep/Blender/$SCENE/${N_VIEWS}views/3DGS --is_static --n_views $N_VIEWS --iterations 40000 --pts_samples hull --max_num_pts 300000 --load_time_step 0 --composition_rank 0
+python render.py -s ${DATASET_ROOT}/${SCENE} --white_background --eval  -m ./output_rep/Blender/$SCENE/${N_VIEWS}views/3DGS --is_static --n_views $N_VIEWS --iterations 40000 --pts_samples hull --max_num_pts 300000 --load_time_step 0 --composition_rank 0
+
+# to reproduce SplatFields3D
+python train.py -s ${DATASET_ROOT}/${SCENE} --white_background --eval  -m ./output_rep/Blender/${SCENE}/${N_VIEWS}views/SplatFields --encoder_type VarTriPlaneEncoder --D 4 --lambda_norm 0.01 --test_iterations -1 --W 128 --n_views ${N_VIEWS} --iterations 40000 --pts_samples load --max_num_pts 100000 --pc_path ./output_rep/Blender/${SCENE}/${N_VIEWS}views/3DGS/point_cloud/iteration_40000/point_cloud.ply --load_time_step 0 --composition_rank 0
+python render.py -s ${DATASET_ROOT}/${SCENE} --white_background --eval  -m ./output_rep/Blender/${SCENE}/${N_VIEWS}views/SplatFields --encoder_type VarTriPlaneEncoder --D 4 --lambda_norm 0.01 --test_iterations -1 --W 128 --n_views ${N_VIEWS} --iterations 40000 --pts_samples load --max_num_pts 100000 --pc_path ./output_rep/Blender/${SCENE}/${N_VIEWS}views/3DGS/point_cloud/iteration_40000/point_cloud.ply --load_time_step 0 --composition_rank 0
 ```
 
 ## Static Reconstruction
