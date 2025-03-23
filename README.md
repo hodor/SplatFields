@@ -25,6 +25,12 @@ docker pull rtgasi/splat-fields:1.0.0
 docker run --gpus all -it rtgasi/splat-fields:1.0.0
 ```
 
+#### Troubleshooting
+If you run into the issue `NVIDIA-SMI couldn't find libnvidia-ml.so library in your system. Please make sure that the NVIDIA Display Driver is properly installed and present in your system.`, you can try mounting your nvidia library explicitly in docker like this:
+```bash
+sudo docker run --gpus all \ -v /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1:/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 \ -v /usr/lib/x86_64-linux-gnu/libnvidia-ml.so:/usr/lib/x86_64-linux-gnu/libnvidia-ml.so \ -it rtgasi/splat-fields:1.0.0
+```
+
 ### 2. Train and render the sample data
 You'll need to do the 3DGS before you do the SplatFields3D
 
